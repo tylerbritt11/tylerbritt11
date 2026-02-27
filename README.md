@@ -14,7 +14,7 @@ I'm the sole PM at Paradigm, where I lead product strategy across ~20 engineers 
 
 ## Current Projects
 
-- 🔧 [WellKept](https://replit.com/@tylerbritt11/Well-Kept) — AI-powered home maintenance platform (concept → MVP, beta launch target: Q1 2026)
+- 🔧 WellKept (private repo) — AI-powered home maintenance platform (concept → MVP, beta launch target: Q1 2026). Demo available on request.
 - 💪 [Recovery Reviews](https://recovery-reviews.com) — Health & fitness blog
 
 ## Background
