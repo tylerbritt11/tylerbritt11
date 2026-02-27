@@ -2,7 +2,7 @@
 
 PM who ships AI-powered products in industries most PMs won't touch: construction, real estate, and home maintenance.
 
-I'm the sole PM at Paradigm, where I lead product strategy across ~20 engineers plus a dedicated AI team for a B2B SaaS platform that processes tens of thousands of construction blueprints each year. This GitHub is where I document real product decisions, frameworks, and AI-native workflows I'm using to ship products from idea to launch. Expect practical PM artifacts, not theory.
+I'm the sole PM at Paradigm, where I lead product strategy across ~20 engineers plus a dedicated AI team for a B2B SaaS platform that processes tens of thousands of construction blueprints each year. This GitHub is where I document real product decisions and AI-native workflows I'm using to ship products from idea to launch. Expect practical PM artifacts, not theory.
 
 ## What I Build
 
@@ -15,7 +15,6 @@ I'm the sole PM at Paradigm, where I lead product strategy across ~20 engineers 
 ## Current Projects
 
 - 🔧 [WellKept](https://replit.com/@tylerbritt11/Well-Kept) — AI-powered home maintenance platform (concept → MVP, beta launch target: Q1 2026)
-- 📝 [PM Frameworks](https://github.com/tylerbritt11/pm-frameworks) — Research briefs, templates, and AI prompts I actually use
 - 💪 [Recovery Reviews](https://recovery-reviews.com) — Health & fitness blog
 
 ## Background
