@@ -2,7 +2,7 @@
 
 PM who ships AI-powered products in industries most PMs won't touch: construction, real estate, and home maintenance.
 
-I'm the sole PM at Paradigm, where I lead product strategy across ~20 engineers plus a dedicated AI team for a B2B SaaS platform that processes tens of thousands of construction blueprints each year. This GitHub is where I document real product decisions and AI-native workflows I'm using to ship products from idea to launch. Expect practical PM artifacts, not theory.
+I'm a PM at Paradigm, where I lead product strategy across ~20 engineers plus a dedicated AI team for a B2B SaaS platform that processes tens of thousands of construction blueprints each year. 
 
 ## What I Build
 
