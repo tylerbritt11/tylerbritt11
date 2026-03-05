@@ -6,7 +6,7 @@ I'm a PM at Paradigm, where I lead product strategy across ~20 engineers plus a 
 
 ## What I Build
 
-🏗️ **AI-Native B2B SaaS** — Embedding computer vision and generative AI into products for industries most PMs overlook, including construction and home maintenance.
+🏗️ **AI-Native B2B SaaS** — Embedding computer vision and generative AI into products for built world industries, including construction and home maintenance.
 
 🏠 **Proptech** — Building tools that make real estate operations and homeownership more intelligent, proactive, and data-driven.
 
