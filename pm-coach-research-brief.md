@@ -200,7 +200,56 @@ temporal agent memory · critique-agent design · **evals on subjective output**
 
 ---
 
-## 7. Open questions for the full-access session
+## 7. The Lenny ecosystem — the external-standard layer (and a warm-up build)
+
+Lenny Rachitsky (the biggest PM newsletter/podcast) **open-sourced all ~320
+podcast transcripts (Jan 2026)** and shipped an **official data pack + MCP server**
+(lennysdata.com), triggering a wave of community builds. Critically, **all of them
+are content-retrieval over a fixed public corpus** — "what does Lenny/his guests say
+about topic X" — with **no memory of *your* work and no longitudinal model of *you*.**
+This *confirms Athena's wedge by contrast*: the behavior-critiquing personal coach is
+a different product category. But the ecosystem hands you two gifts.
+
+### What exists
+| Tool | Type | Notes |
+|---|---|---|
+| **LennyBot** (lennybot.com) | Official Q&A | GPT-4 over newsletter + all episodes, source links, voice clone you can call. Built by a third party, Lenny-branded. |
+| **Ask Lenny** | 3rd-party RAG | Retrieval-first; answers *only* from real transcript quotes with episode citations; **refuses when transcripts don't cover it**. Cleanest grounded-Q&A example. |
+| **Lenny's Knowledge Graph** | 3rd-party graph | 330+ episodes / 7,600+ entities; answers with **episode + timestamp + YouTube deep-links**. |
+| **Lenny's Friends (Notion)** | Persona | Guests as "mentor" personas you ask in your workspace — the "ask what X would do" play. |
+| **`RefoundAI/lenny-skills`** | Skill pack | **86 PM skills** (frameworks + diagnostic questions) extracted from episodes, installable as Claude/Agent Skills (`npx skills add RefoundAI/lenny-skills`). Likely the repo recalled. |
+| MCP servers | Catalog access | `akshayvkt/lenny-mcp`, Wire's hosted MCP — chat the catalog from Claude Code/Cursor. |
+
+Sources: x.com/lennysan/status/2011243567340298651 (transcript release) ·
+lennysdata.com + github.com/LennysNewsletter/lennys-newsletterpodcastdata ·
+lennybot.com · ask-lenny.vercel.app + iamprayerson.com (build writeup) ·
+lennysgraph.vercel.app · github.com/RefoundAI/lenny-skills + refoundai.com/lenny-skills ·
+github.com/akshayvkt/lenny-mcp. (Front-ends 403'd automated fetch → live status
+*medium* confidence; GitHub repos + Lenny's announcement tweets *high* confidence.)
+
+### Gift 1 — a free, pre-built "what good looks like" knowledge layer
+This solves the §2 rubric-grounding problem. **Athena's critic agent grounds feedback
+in two sources: (a) your actual behavior from your work exhaust, and (b) the external
+standard from the Lenny corpus / `lenny-skills`.** Example output:
+> "You shipped without testing the riskiest assumption — here's what Torres says
+> about that, cited to episode X."
+
+That turns a vague LLM critique into an **evidence-grounded, citable** one — exactly
+the anti-hallucination (Self-RAG) pattern from §3. The §2 rubric stays the scoring
+backbone; the Lenny layer supplies the *retrievable supporting evidence and language*.
+
+### Gift 2 — a zero-privacy-risk warm-up build
+Want to learn the RAG / MCP / eval stack before pointing it at sensitive work data?
+Build your own **"chat Lenny's podcast with citations"** over the open transcripts:
+same engine, public data, no privacy stakes. Then swap the corpus for KraneBrain.
+A clean on-ramp to the real thing.
+
+**Caveat:** `lenny-skills` is third-party extraction of copyrighted content — fine
+for personal use; flag it if Athena ever becomes more than personal.
+
+---
+
+## 8. Open questions for the full-access session
 
 - What's actually in KraneBrain? (transcript format, frontmatter, is there any
   decision log today?) — determines how much of dims 6/7 are measurable now.
@@ -214,9 +263,9 @@ temporal agent memory · critique-agent design · **evals on subjective output**
 
 ---
 
-*Research method: 5 parallel web-search agents (work-exhaust tools · AI coaching
+*Research method: 6 parallel web-search agents (work-exhaust tools · AI coaching
 landscape · PM excellence frameworks · RAG/KG architectures · subjective-output
-evals), sources fetched and claims confidence-rated. Several primary domains
+evals · Lenny ecosystem), sources fetched and claims confidence-rated. Several primary domains
 (arxiv, svpg, producttalk, amazon, intercom) 403'd direct fetch; their figures
 come from search-result extracts of the correct URLs — flagged inline where the
 exact number is study/vendor-specific rather than universal.*
