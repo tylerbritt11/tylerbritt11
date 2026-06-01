@@ -45,19 +45,35 @@ the PM rubric it scores against: §0–§2.)
   challenge, and add the flip-rate probe (§4) as soon as there's something to test.
 
 ### Simplest build path — smallest first, in order
-- **v0 — "The Friday Review" (a Claude Code skill, ~one sitting).** Pull last week's
-  Linear activity (existing connector) + Tyler's stated priorities/roadmap (from
-  KraneBrain) → one-page review: *did my week match my priorities, and what decision
-  is rotting?* Write it into KraneBrain. **No new infra. Proves value immediately.**
-- **v1 — Decision log + 2–3 rubric dimensions.** Add a markdown decision log in the
-  vault; start scoring a few §2 dimensions from meeting transcripts — recommend
-  **Inquiry Quality** (questions vs assertions) and **Decision Velocity/reversibility**
-  first. Accumulate weekly; let the picture build over time.
+- **v0 — On-demand coaching skill (a Claude Code skill, ~one sitting).** The everyday
+  mode: Tyler asks, anytime — *"look at my last two weeks and tell me if I'm focused on
+  the right things,"* *"coach me before my 1:1,"* *"what am I not seeing?"* The skill
+  reads the vaults + last N days of Linear/Slack (existing connectors), encodes the §2
+  rubric and the **anti-sycophancy stance** (challenge, cite evidence, don't flatter),
+  and returns a short, pointed read. **No new infra** — Claude Code already has the
+  data access. This is the primary interface and proves value immediately.
+  - **The "Friday Review" is the same skill on a timer**, not a separate build: a
+    *scheduled/proactive* wrapper that runs v0 weekly and writes a one-page digest into
+    KraneBrain — *did my week match my priorities, and what decision is rotting?* — so
+    Tyler gets a nudge even when he doesn't think to ask. Add it once the on-demand
+    skill feels useful.
+- **v1 — Decision log + 2–3 rubric dimensions (the longitudinal layer).** This is what
+  turns a smart one-off read into an actual *coach*: state that **accumulates**. Add a
+  markdown decision log in the vault; start scoring a few §2 dimensions from meeting
+  transcripts — recommend **Inquiry Quality** (questions vs assertions) and **Decision
+  Velocity/reversibility** first. Score week over week so the coach can say things like
+  *"your discovery questions have improved since March"* or *"you keep reopening
+  decisions in this area."* The value **is** the accumulation — it can't be shortcut.
 - **v2 — the real engine (only if v0/v1 earn it).** Standalone MCP server with temporal
   memory (Zep/Graphiti or Mem0) + a light People/Decisions/Initiatives graph + a
   **separate evidence-grounded critic** + an eval harness with sycophancy probes,
   grounded against the Lenny corpus as the "what good looks like" layer (§3, §7, §9).
   This is the learning-heavy phase (knowledge graphs, evals, MCP).
+
+> **Mental model:** *one coaching skill, two trigger modes* — on-demand (you ask) and
+> scheduled (the Friday Review). For everyday on-demand use, very little needs building
+> (Claude Code already has the connectors + vault access); the meaningful build is the
+> **longitudinal layer** (v1→v2) that makes coaching cumulative rather than one-shot.
 
 ### Orientation checklist — DO THIS FIRST (you have local access the research didn't)
 1. **Inventory the vaults.** Locate KraneBrain & BrittBrain on disk; map folder
@@ -80,8 +96,9 @@ the PM rubric it scores against: §0–§2.)
 
 ### Then propose → confirm → build
 After orientation, give Tyler: (a) what you found, (b) updated answers to §10,
-(c) a concrete v0 spec for the Friday Review, then get his go-ahead and build v0.
-Ship something he can feel this week. Keep it simple.
+(c) a concrete v0 spec for the **on-demand coaching skill** (with the Friday Review as
+a scheduled wrapper of it), then get his go-ahead and build v0. Ship something he can
+*use interactively* this week. Keep it simple.
 
 ---
 
