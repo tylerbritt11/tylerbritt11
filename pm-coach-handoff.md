@@ -1,16 +1,87 @@
-# PM Coaching Agent — Concept-Refinement Research Brief
+# PM Coaching Agent — Build Handoff & Research Dossier
 
-> A personal AI system that ingests a product manager's own *work exhaust*
-> (meeting transcripts in Obsidian/KraneBrain, Linear issues/cycles, Slack
-> messages, Claude/LLM chat history) and produces meta-reviews + coaching:
-> better discovery questions, better sequencing, decision tracking, working
-> on the right things, improving over time.
+> A personal AI coach that watches how Tyler actually practices product
+> management — across his Obsidian vaults (KraneBrain = work, BrittBrain =
+> personal), Linear, Slack, and his Claude/Codex history — and gives honest,
+> evidence-grounded feedback: better discovery questions, better sequencing,
+> decision tracking, working on the right things, improving over time.
 >
-> Working name: **Athena** (a PM-craft coach, sibling to the recovery-reviews
-> research engine — same ingest → knowledge base → synthesize loop).
+> Working name: **Athena** *(placeholder — collides with AWS Athena; pick a
+> distinct name).* Sibling to the recovery-reviews research engine (same
+> ingest → knowledge base → synthesize loop).
 >
-> Status: concept refinement, **not** an implementation spec. Carry this into
-> the full-access session on the computer (where Krane + private repos are visible).
+> **This is a handoff doc.** §A below is the kickoff for a local agent with full
+> machine access; §0–§10 are the completed research it should use as context.
+
+---
+
+## §A. ▶ START HERE — Kickoff for the local agent
+
+**You are picking up a project to build a personal PM coaching tool for Tyler.**
+The research below (§0–§10) is done. Your job: get oriented against his *actual*
+environment, answer the open questions, and start building the simplest useful
+version. Read this section, then run the Orientation Checklist before writing code.
+
+### The mission (one sentence)
+Build Tyler a personal coach grounded in his real work behavior that helps him ask
+better questions, sequence better, track decisions, and work on the right things —
+and that **challenges him rather than flatters him**. (Why this is a real gap, and
+the PM rubric it scores against: §0–§2.)
+
+### Decisions already made — don't relitigate
+- **Personal-first. Build for Tyler, keep it as simple as possible.** Open-source/
+  productizing is explicitly **deferred** (§8 is "someday, not now"). We can rebuild
+  it cleanly for OSS later; right now it just has to help *him*.
+- **Claude Code is the primary runtime AND interface.** Tyler barely uses his Hermes
+  work-agent; he works through **Claude Code + Codex**, which already write to the
+  vaults and already have **Slack + Linear connectors**. Lean on that instead of
+  building ingestion. (OpenClaw/BrittBot = personal harness; secondary consumer.)
+- **Files-as-memory is fine for v1.** The vaults are markdown-on-disk already; the
+  coach's state (decision log, weekly reviews, scorecards) can live as markdown in
+  KraneBrain. **No database required to start.**
+- **Tokens/API credits are not a constraint** (Claude Max + ChatGPT Pro). Optimize
+  for impact and learning, not cost.
+- **The coach must push back.** Sycophancy is the #1 risk (§4) — design v1 to
+  challenge, and add the flip-rate probe (§4) as soon as there's something to test.
+
+### Simplest build path — smallest first, in order
+- **v0 — "The Friday Review" (a Claude Code skill, ~one sitting).** Pull last week's
+  Linear activity (existing connector) + Tyler's stated priorities/roadmap (from
+  KraneBrain) → one-page review: *did my week match my priorities, and what decision
+  is rotting?* Write it into KraneBrain. **No new infra. Proves value immediately.**
+- **v1 — Decision log + 2–3 rubric dimensions.** Add a markdown decision log in the
+  vault; start scoring a few §2 dimensions from meeting transcripts — recommend
+  **Inquiry Quality** (questions vs assertions) and **Decision Velocity/reversibility**
+  first. Accumulate weekly; let the picture build over time.
+- **v2 — the real engine (only if v0/v1 earn it).** Standalone MCP server with temporal
+  memory (Zep/Graphiti or Mem0) + a light People/Decisions/Initiatives graph + a
+  **separate evidence-grounded critic** + an eval harness with sycophancy probes,
+  grounded against the Lenny corpus as the "what good looks like" layer (§3, §7, §9).
+  This is the learning-heavy phase (knowledge graphs, evals, MCP).
+
+### Orientation checklist — DO THIS FIRST (you have local access the research didn't)
+1. **Inventory the vaults.** Locate KraneBrain & BrittBrain on disk; map folder
+   structure, frontmatter/tag conventions, daily-note format, link taxonomy.
+2. **Inspect meeting transcripts in KraneBrain** — naming, summary vs raw transcript,
+   whether action items/decisions are captured in any structured way.
+3. **Hunt for an existing decision log.** Does Tyler record decisions + rationale +
+   confidence anywhere today? If not, that absence is the single highest-ROI fix
+   (unlocks rubric dims 6 & 7 — see §2 note).
+4. **Verify Claude Code's connectors** — confirm Linear + Slack actually work from
+   here; enumerate available fields (Linear: cycles/estimates/projects? Slack: which
+   channels/DMs?).
+5. **Find his stated priorities/roadmap/OKRs** (KraneBrain? Linear? a doc?) — required
+   to score effort-vs-priority alignment (rubric dim 8).
+6. **Mine existing repos for reusable patterns:** `brittbrain`, `brittbrain-architecture`
+   (his memory architecture), the OpenClaw/BrittBot setup, KraneBot if it exists.
+7. **Check Claude/Codex history export** — availability + format (richest source of his
+   actual *thinking*, not just outputs).
+8. **Report findings against the Open Questions (§10) before coding.**
+
+### Then propose → confirm → build
+After orientation, give Tyler: (a) what you found, (b) updated answers to §10,
+(c) a concrete v0 spec for the Friday Review, then get his go-ahead and build v0.
+Ship something he can feel this week. Keep it simple.
 
 ---
 
@@ -251,6 +322,10 @@ for personal use; flag it if Athena ever becomes more than personal.
 
 ## 8. If this becomes an open-source product
 
+> **DEFERRED — read as "someday, not now."** Decision is personal-first (§A). Kept
+> here because building v2 *decoupled* (connectors, rubric-as-config) makes a future
+> OSS rebuild cheap — but do **not** let this complexity leak into v0/v1.
+
 Going OSS (ship a framework; users connect their own data sources) is mostly
 *decoupling* — and it's good hygiene you'd want anyway. Build it decoupled from
 day one and "personal tool" and "OSS framework" are the same codebase at different
@@ -291,8 +366,17 @@ Airbyte/Singer protocol specs · docs.cognee.ai (ontology, MCP) · github.com/kh
 
 ## 9. Technical architecture & where it lives
 
-**Decision: build a standalone, independently-versioned engine exposed over MCP —
-not a sub-agent buried inside Hermes or OpenClaw.** Both your harnesses then consume it.
+> **v1 simplification (current direction):** Tyler works through **Claude Code**,
+> which already has the Slack/Linear connectors and reads the vaults — so **v0/v1
+> need no separate server**: a Claude Code skill + files-as-memory in KraneBrain *is*
+> the architecture. The standalone-MCP-engine below is the **v2 graduation target**,
+> worth building once value is proven (and because it's the part where you learn
+> knowledge graphs / temporal memory / evals). Claude Code is the primary MCP client;
+> BrittBot/OpenClaw is a secondary consumer.
+
+**v2 decision: build a standalone, independently-versioned engine exposed over MCP —
+not a sub-agent buried inside Hermes or OpenClaw.** Claude Code (primary) and
+BrittBot/OpenClaw (secondary) then consume it.
 
 *Context (verified via GitHub API):* "Hermes" and "OpenClaw" are large public
 frameworks you run instances on, not private naming:
