@@ -249,7 +249,102 @@ for personal use; flag it if Athena ever becomes more than personal.
 
 ---
 
-## 8. Open questions for the full-access session
+## 8. If this becomes an open-source product
+
+Going OSS (ship a framework; users connect their own data sources) is mostly
+*decoupling* — and it's good hygiene you'd want anyway. Build it decoupled from
+day one and "personal tool" and "OSS framework" are the same codebase at different
+maturity. What changes:
+
+1. **The connector becomes the core abstraction.** Don't hardcode KraneBrain/Linear/
+   Slack — define a connector interface and ship connectors as plugins. Steal the
+   pattern from **Onyx (formerly Danswer)** / **Airbyte**: each connector declares a
+   JSON-Schema config + credential loader, implements a full `load` + an incremental
+   `poll` with a framework-persisted cursor, and normalizes every source to one
+   Document/event schema. (Onyx: MIT core, 40+ work-tool connectors, capability
+   mixins `Load`/`Poll`/`Checkpointed`.)
+2. **Rubric & ontology become swappable declarative files, not code.** Your PM rubric
+   is opinionated; others want eng-manager / founder / designer rubrics. Make them
+   YAML/markdown resolved through a pluggable interface (Cognee's `BaseOntologyResolver`
+   + OWL is the model). Bonus: same mechanism lets the engine serve recovery-reviews
+   with a different "rubric."
+3. **Local-first + BYO-model/keys is the whole pitch, not a feature.** Nobody pipes
+   their Slack into your server. Full-local (Ollama) or user's own keys; the universal
+   seam is an **OpenAI-compatible base-URL** so local and hosted are interchangeable.
+   This is the differentiator vs. Ariso/BetterUp (closed cloud you must trust).
+4. **Engine ⟂ interface.** Engine (ingest → memory → critic → eval) as a library/
+   service; interfaces (MCP, CLI, web digest) as thin layers.
+5. **Can't bundle a copyrighted "standard" corpus.** Ship the framework; let users
+   point at their own corpus or the official Lenny data pack. The rubric (synthesis of
+   public frameworks) is fine; someone else's extracted transcripts/skills are not.
+6. **Ship the eval harness + sycophancy probes** so others can trust their deployment.
+7. **Telemetry off by default** (Khoj ships it on and users hate it — easy trust win).
+8. **Licensing:** MIT-core + proprietary `ee/` (Onyx/Morphik/Cognee open-core model)
+   to maximize adoption, *or* pure AGPL to block SaaS rehosting. Pick based on whether
+   you value adoption or rehosting protection.
+
+Sources: github.com/onyx-dot-app/onyx (connectors README, LICENSE, MCP docs) ·
+Airbyte/Singer protocol specs · docs.cognee.ai (ontology, MCP) · github.com/khoj-ai/khoj
+(telemetry) · opencoreventures.com (AGPL vs MIT).
+
+---
+
+## 9. Technical architecture & where it lives
+
+**Decision: build a standalone, independently-versioned engine exposed over MCP —
+not a sub-agent buried inside Hermes or OpenClaw.** Both your harnesses then consume it.
+
+*Context (verified via GitHub API):* "Hermes" and "OpenClaw" are large public
+frameworks you run instances on, not private naming:
+- **OpenClaw** (`openclaw/openclaw`, P. Steinberger, ~376k★) — local-first personal-
+  assistant harness; markdown-on-disk memory, skills as markdown+YAML, **native MCP**.
+  **BrittBot is your OpenClaw instance** (personal).
+- **Hermes Agent** (`NousResearch/hermes-agent`, ~176k★) — self-improving harness with
+  persistent memory, agent-created skills, **isolated sub-agents** (`delegate_task`)
+  and **MCP toolsets** (`inherit_mcp_toolsets`). Your work agent. (Distinct from the
+  "Hermes 4" open-weight *model* family, also Nous.)
+
+Both natively support **MCP servers + sub-agents**, so the "tools vs agents" consensus
+applies directly:
+- Reusable capability multiple agents want → **standalone MCP engine** (single source
+  of truth, independently versioned, callable by work Hermes *and* personal BrittBot,
+  and open-sourceable).
+- **Sub-agent only for context isolation** → recommended **hybrid**: MCP engine, each
+  harness optionally wraps it in a *thin sub-agent* so heavy ingest/reasoning doesn't
+  pollute the main thread.
+- Avoid **"MCP context overload"** (documented failure mode): expose a *tight* tool
+  surface — `get_weekly_review`, `coach_on(topic)`, `query_decision_history` — not 40
+  tools.
+
+**The engine, layered:**
+1. **Connectors** — KraneBrain (Obsidian md), Linear (GraphQL), Slack, Claude history;
+   Onyx/Airbyte pattern (config + creds + full `load` + incremental `poll` + cursor) →
+   one normalized Document/event schema.
+2. **Storage** — vector index + temporal memory (Zep/Graphiti or Mem0) + light
+   People/Decisions/Initiatives knowledge graph (swappable ontology).
+3. **Analysis** — rubric scorer (rubric-as-config) + **separate critic agent** grounded
+   in retrieved evidence: *your behavior* + the *external standard* (Lenny corpus).
+4. **Eval** — golden set + sycophancy probes (§4).
+5. **Scheduler** — daily scan / weekly Friday Review.
+6. **Interface** — MCP server (tight surface) + CLI + web digest.
+
+**Build vs reuse:** Onyx is the substrate to study/fork (MIT, 40+ connectors, ships an
+MCP server) — add temporal memory + rubric + critic + eval on top instead of rebuilding
+ingestion. Leaner alt (more learning, less weight): borrow Onyx's *connector interface*
+and build a slim custom engine. **Fastest bootstrap:** if Hermes/KraneBot already
+ingests work data, read **KraneBrain** (the vault already holds transcripts) for v1,
+then add first-class connectors for the portable/OSS version.
+
+**Naming flag:** "Athena" collides with **AWS Athena** — pick a distinct name before
+it's public.
+
+Sources: GitHub API (openclaw/openclaw, NousResearch/hermes-agent) · openclaw.ai docs ·
+hermes-agent.nousresearch.com/docs · eclipsesource.com (MCP context overload) ·
+cra.mr "MCP, Skills, and Agents" · cdata.com (single-agent+MCP vs multi-agent).
+
+---
+
+## 10. Open questions for the full-access session
 
 - What's actually in KraneBrain? (transcript format, frontmatter, is there any
   decision log today?) — determines how much of dims 6/7 are measurable now.
@@ -263,9 +358,10 @@ for personal use; flag it if Athena ever becomes more than personal.
 
 ---
 
-*Research method: 6 parallel web-search agents (work-exhaust tools · AI coaching
+*Research method: 8 parallel web-search agents (work-exhaust tools · AI coaching
 landscape · PM excellence frameworks · RAG/KG architectures · subjective-output
-evals · Lenny ecosystem), sources fetched and claims confidence-rated. Several primary domains
+evals · Lenny ecosystem · OSS BYO-data frameworks · OpenClaw/Hermes + agent
+architecture), sources fetched and claims confidence-rated. Several primary domains
 (arxiv, svpg, producttalk, amazon, intercom) 403'd direct fetch; their figures
 come from search-result extracts of the correct URLs — flagged inline where the
 exact number is study/vendor-specific rather than universal.*
